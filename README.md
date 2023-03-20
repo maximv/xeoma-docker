@@ -1,5 +1,6 @@
-Run Xeoma with Docker
+Run Xeoma with Docker on arm64
 ================
+Fork https://github.com/jedimonkey/xeoma-docker.git
 
 ### Purpose
 A docker container for running Xeoma server. Xeoma is video surveillance software developed by Felena Soft http://felenasoft.com/. It supports a wide range of security cameras, has low CPU overhead, and a very easy-to-use interface.
@@ -8,28 +9,19 @@ A docker container for running Xeoma server. Xeoma is video surveillance softwar
 Make sure you read this - http://felenasoft.com/xeoma/en/eula/ as you are effectively agreeing to it by running this docker.
 
 ### Getting the Docker
-From Docker Index
-```
-docker pull jedimonkey/xeoma
-```
 
 Build yourself
 ```
-git clone https://github.com/jedimonkey/xeoma-docker.git
-docker build --rm -t <your-docker-name>/xeoma xeoma-docker
+git clone https://github.com/maximv/xeoma-docker-arm64.git
+docker build -t xeoma-server
 ```
 
 ### Running
 
-To run the container, fire up docker like so:
+To run the container like so:
 
 ```
-$ sudo docker run -d --name=xeoma --restart=always -p 8090:8090 -v /local/path/to/config:/usr/local/Xeoma jedimonkey/xeoma
-```
-
-The "archive" is where videos and photos are stored. If you want to store your archive somewhere other than inside your docker container, just add another volume:
-```
-$ sudo docker run -d --name=xeoma --restart=always -p 8090:8090 -v /local/path/to/config:/usr/local/Xeoma -v /local/path/to/archive:/usr/local/Xeoma/XeomaArchive jedimonkey/xeoma
+$ sudo ddocker run -d --name=xeoma --restart=always -p 8090:8090  -v /local/path/to/config:/usr/local/Xeoma xeoma-server
 ```
 
 See the notes below for special networking considerations depending on your cameras, and for licensing issues.
@@ -59,10 +51,31 @@ However, if you have any issues, the container will append some information abou
 Finally, if all else fails, use the felenasoft website for help. http://felenasoft.com/xeoma/en/support/activation-issues/
 
 ### Notes
-Depending on how your security camera works, you might need to enable host networking by adding `--net=host` to your run command. If you are using IP cameras, you can run this container in bridged networking mode, which is more secure. However, you will need to manually enter the URL for the camera, because the camera search feature probably won't work. You can consult this website for information about rtsp:// URLs for accessing the camera's low and high quality video streams: https://www.ispyconnect.com/sources.aspx.
 
-### Support
-I don't work for FelenaSoft, I just own a license.  So if you find any bugs with the software that are related to the docker container, let me know and I'll investigate.  If you find bugs that are related to the actual software or cameras, etc then contact FelenaSoft.  This project is a personal pet project that FelenaSoft is aware of, but offer no support for it.  Don't hassle them if things don't work in relation to the container, etc.
+go inside container:
 
-### Todo
-Set up a better start up process, so it has config to disable upgrades (upgrades to the software should be performed through a new container, not by using the upgrade through Xeoma)
+```
+$ sudo docker container exec -it xeoma bash
+```
+Archive locates in
+
+```
+$ /.config/Xeoma/XeomaArchive/
+```
+
+xeoma.app locates in
+
+```
+/bin/Xeoma/
+```
+You can see the password:
+
+```
+/bin/Xeoma/xeoma -showpassword
+```
+
+All commands:
+
+```
+/bin/Xeoma/xeoma -h
+```
